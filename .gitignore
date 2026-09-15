@@ -1,0 +1,93 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+htmlcov/
+coverage/
+.coverage
+.coverage.*
+
+# Node
+node_modules/
+
+# Vite / Frontend build
+.vite/
+frontend/dist/
+
+# Databases
+*.sqlite
+*.sqlite3
+*.db
+
+# Uploads / temporary
+uploads/
+tmp/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Test artifacts
+playwright-report/
+test-results/
+
+# Generated screenshots/videos (Playwright etc.)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.mp4
+*.webm
+*.avi
+
+# Azure
+.azure/
+
+# Docker
+*.tar
+*.docker
+
+# Binary / model / dataset blobs
+*.bin
+*.pkl
+*.pt
+*.pth
+*.onnx
+*.safetensors
+
+# Documents (fixtures must be .txt only)
+*.pdf
+*.docx
+*.doc
+*.xlsx
+*.pptx
+
+# Compiled frontend build output (committed separately or via CI)
+backend/static/assets/
+backend/static/index.html
