@@ -3,8 +3,14 @@ ClaimTrace – FastAPI application entrypoint.
 """
 
 import logging
+import sys
 from contextlib import asynccontextmanager
 from pathlib import Path
+
+# Ensure application root directory is always in sys.path
+APP_DIR = Path(__file__).resolve().parent
+if str(APP_DIR) not in sys.path:
+    sys.path.insert(0, str(APP_DIR))
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware

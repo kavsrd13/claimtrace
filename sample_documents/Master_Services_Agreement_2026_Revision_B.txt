@@ -1,0 +1,56 @@
+MASTER SERVICES AGREEMENT
+Version 2.0 (Revision B) (cid:127) Major Scope & High-Contrast Commercial Revision
+This Master Services Agreement (“Agreement”) is made and entered into as of October 1, 2026 (“Effective Date”), by
+and between CloudScale Technologies Inc., a California corporation with principal offices at 100 Mission Street,
+San Francisco, CA 94105 (“Provider”), and Apex Global Financial LLC, a Delaware limited liability company with
+principal offices at 120 Wall Street, 18th Floor, New York, NY 10005 (“Client”).
+RECITALS
+WHEREAS, Provider provides specialized AI supercomputing cluster administration, 24/7 Red-Team cyber warfare
+defense, and global multi-cloud orchestration across AWS, Azure, Google Cloud, and Oracle OCI; and WHEREAS,
+Client desires to retain Provider under an exclusive enterprise multi-year engagement with continuous operational
+coverage.
+1. SCOPE OF SERVICES & TECHNICAL SUPPORT
+1.1 Advanced AI & Multi-Cloud Infrastructure Scope: Provider shall deliver dedicated GPU cluster management,
+autonomous neural network query optimization, multi-cloud redundancy across four cloud hyperscalers, and 24/7
+active Managed Cyber Warfare Defense.
+1.2 24/7 Real-Time Support: Provider guarantees 24/7/365 live dedicated engineering support with guaranteed
+response times under five (5) minutes for all severity levels.
+2. SERVICE LEVEL AGREEMENT (SLA) & UPTIME COMMITMENT
+2.1 Five Nines Availability Target: Covered services shall maintain an ultra-high Monthly Uptime Percentage of not
+less than 99.999% (“five nines”).
+2.2 Maintenance Windows: Maintenance requires at least seven (7) calendar days advance written notice,
+permitted only on the first Sunday of each quarter.
+Monthly Uptime Band Service Credit Percentage
+99.990% – 99.998% 25% credit applied against subsequent invoice
+Below 99.990% 50% credit applied against subsequent invoice
+3. PRICING, BILLING SCHEDULE & PAYMENT TERMS
+3.1 Monthly Enterprise Retainer: Client shall pay a monthly enterprise retainer of $95,000.00 USD, billed annually in
+advance.
+3.2 Immediate Settlement Requirement: Invoices are payable Net-0 days (Due Immediately Upon Receipt).
+3.3 Late Payments: Unpaid balances accrue late interest at 5.0% per month, compounding weekly.
+
+4. LIMITATION OF LIABILITY & INDEMNIFICATION
+4.1 Unlimited Liability: NO LIABILITY CAP SHALL APPLY. The Parties explicitly agree that total aggregate liability
+arising under or related to this Agreement is completely uncapped and unlimited for all claims, breaches, and
+indemnities.
+4.2 Consequential Damages: Consequential, special, and exemplary damages are fully recoverable under this
+Agreement.
+5. CONFIDENTIALITY & DATA PROTECTION
+5.1 Perpetual Confidentiality: Confidentiality obligations shall endure in perpetuity for all disclosures.
+5.2 Compliance Standards: Active certification and audits for SOC 2 Type II, ISO/IEC 27001:2022, FedRAMP High,
+and HIPAA Security Rule.
+5.3 Emergency Breach Notification Window: In the event of confirmed or suspected unauthorized data access,
+Provider must notify Client’s Chief Information Security Officer (CISO) and relevant authorities within two (2) hours.
+6. TERM, RENEWAL & CONVENIENCE TERMINATION
+6.1 Initial Period: Five (5) years non-cancellable lock-in term from the Effective Date.
+6.2 No Convenience Termination: Termination for convenience is strictly prohibited. Any early termination by
+Client constitutes a material breach requiring immediate payment of one hundred percent (100%) of all remaining
+contract fees through the end of the five-year term as liquidated damages.
+7. GOVERNING LAW & JURISDICTION
+7.1 This Agreement shall be governed strictly by the laws of the State of California. The Parties irrevocably submit to
+the exclusive jurisdiction of the San Francisco County Superior Court and explicitly waive any right to arbitration.
+CloudScale Technologies Inc. Apex Global Financial LLC
+By: /s/ Marcus Vance By: /s/ Eleanor Wright
+Name: Marcus Vance Name: Eleanor Wright
+Title: Chief Operating Officer Title: Chief Information Officer
+Date: March 1, 2026 Date: March 1, 2026

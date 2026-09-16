@@ -70,7 +70,24 @@ def _extract_pdf(content: bytes) -> list[Chunk]:
     with pdfplumber.open(io.BytesIO(content)) as pdf:
         for page_num, page in enumerate(pdf.pages, start=1):
             text = page.extract_text() or ""
-            paragraphs = [p.strip() for p in text.split("\n\n") if p.strip()]
+            if "\n\n" in text:
+                paragraphs = [p.strip() for p in text.split("\n\n") if p.strip()]
+            else:
+                raw_lines = [line.strip() for line in text.splitlines() if line.strip()]
+                paragraphs = []
+                current_para: list[str] = []
+                for line in raw_lines:
+                    if current_para and (
+                        (line[0].isdigit() and "." in line[:5])
+                        or (line.isupper() and len(line) < 50)
+                    ):
+                        paragraphs.append(" ".join(current_para))
+                        current_para = [line]
+                    else:
+                        current_para.append(line)
+                if current_para:
+                    paragraphs.append(" ".join(current_para))
+
             for para_num, para in enumerate(paragraphs, start=1):
                 chunks.append(
                     Chunk(

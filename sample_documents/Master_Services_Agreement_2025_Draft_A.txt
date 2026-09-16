@@ -1,0 +1,56 @@
+MASTER SERVICES AGREEMENT
+Version 1.0 (Draft A) (cid:127) Standard Commercial Terms
+This Master Services Agreement (“Agreement”) is made and entered into as of January 15, 2025 (“Effective Date”),
+by and between CloudScale Technologies Inc., a Delaware corporation with principal offices at 500 Enterprise
+Way, Suite 400, San Francisco, CA 94105 (“Provider”), and Apex Global Financial LLC, a Delaware limited liability
+company with principal offices at 120 Wall Street, 18th Floor, New York, NY 10005 (“Client”).
+RECITALS
+WHEREAS, Provider provides managed cloud hosting administration, relational database optimization, and IT
+systems engineering; and WHEREAS, Client desires to engage Provider to oversee its mission-critical cloud
+environments on AWS and Microsoft Azure, and Provider agrees to render such services on the terms stated herein.
+1. SCOPE OF SERVICES & TECHNICAL SUPPORT
+1.1 Core Infrastructure Administration: Provider shall furnish Tier-1 systems administration, multi-region database
+index maintenance, automated configuration snapshots, and resource utilization monitoring across Client’s cloud
+environments.
+1.2 Operational Support Windows: Technical assistance is available Monday through Friday from 8:00 AM to 8:00 PM
+Eastern Standard Time (EST), excluding federal banking holidays. Severity 1 emergency outage response is staffed
+twenty-four (24) hours per day, seven (7) days per week.
+2. SERVICE LEVEL AGREEMENT (SLA) & UPTIME COMMITMENT
+2.1 Monthly Availability Target: Provider guarantees that covered cloud services shall maintain a Monthly Uptime
+Percentage of not less than 99.9% (“three nines”).
+2.2 Scheduled Maintenance: Routine maintenance shall be performed on Sundays between 01:00 AM and 05:00 AM
+EST. Provider must provide at least forty-eight (48) hours advance written notice.
+Monthly Uptime Band Service Credit Percentage
+99.00% – 99.89% 5% credit applied against following month fee
+Below 99.00% 15% credit applied against following month fee
+3. PRICING, BILLING SCHEDULE & PAYMENT TERMS
+3.1 Monthly Retainer: Client shall pay a fixed fee of $18,500.00 USD per month, invoiced on the first day of each
+calendar month.
+3.2 Settlement Term: Invoices are payable Net-30 days from date of invoice.
+3.3 Late Payments: Unpaid balances accrue interest at 1.5% per month or the statutory maximum, whichever is
+lower.
+
+4. LIMITATION OF LIABILITY & INDEMNIFICATION
+4.1 Liability Cap: Total aggregate liability for either party under this Agreement is strictly capped at the total fees paid
+by Client to Provider during the twelve (12) months preceding the incident.
+4.2 Consequential Damages: In no event shall either party be liable for special, indirect, punitive, or consequential
+damages, including lost revenue or profits.
+5. CONFIDENTIALITY & DATA PROTECTION
+5.1 Confidentiality Period: Confidentiality obligations survive for five (5) years post termination of this Agreement.
+5.2 Security Standards: Provider maintains annual SOC 2 Type II certification and complies with GDPR requirements.
+5.3 Security Incident Notification: In the event of a verified data compromise, Provider must inform Client in writing
+within seventy-two (72) hours.
+6. TERM, RENEWAL & CONVENIENCE TERMINATION
+6.1 Initial Period: Two (2) years from Effective Date, renewing annually unless sixty (60) days non-renewal notice is
+given.
+6.2 Termination for Convenience: Either party may terminate for convenience with ninety (90) days advance notice.
+If Client terminates early for convenience, Client must pay an early exit penalty equal to twenty percent (20%) of
+remaining contract fees.
+7. GOVERNING LAW & JURISDICTION
+7.1 This Agreement is governed by the laws of the State of Delaware. Any dispute shall be settled by binding
+arbitration before the American Arbitration Association in Wilmington, Delaware.
+CloudScale Technologies Inc. Apex Global Financial LLC
+By: /s/ Marcus Vance By: /s/ Eleanor Wright
+Name: Marcus Vance Name: Eleanor Wright
+Title: Chief Operating Officer Title: VP of Technology Infrastructure
+Date: January 15, 2025 Date: January 15, 2025

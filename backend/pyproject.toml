@@ -16,6 +16,7 @@ ignore = [
     "E501",  # line too long – handled by formatter
     "B008",  # do not perform function calls in default arguments (FastAPI depends pattern)
 ]
+per-file-ignores = { "main.py" = ["E402"] }
 
 [tool.ruff.lint.isort]
 known-first-party = ["config", "database", "models", "routers", "services"]

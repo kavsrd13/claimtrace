@@ -102,20 +102,59 @@ async def compare_documents(
         logger.exception("Comparison failed: %s", exc)
         raise HTTPException(status_code=502, detail=f"Comparison failed: {exc}") from exc
 
-    return CompareResponse(
-        summary=result_data.get("summary", ""),
-        similarities=result_data.get("similarities", []),
-        differences=[DifferenceItem(**d) for d in result_data.get("differences", [])],
-        claims=[
-            ClaimItem(
-                id=c.get("id", f"C{i:03d}"),
-                claim=c.get("claim", ""),
-                source_a=c.get("source_a"),
-                source_b=c.get("source_b"),
-                verdict=c.get("verdict", "agree"),
+    # Resilient normalization of LLM response fields
+    raw_summary = result_data.get("summary", "")
+    if isinstance(raw_summary, list):
+        summary_str = "\n\n".join(str(s) for s in raw_summary)
+    else:
+        summary_str = str(raw_summary) if raw_summary else ""
+
+    raw_similarities = result_data.get("similarities", [])
+    similarities_list = [str(s) for s in raw_similarities] if isinstance(raw_similarities, list) else []
+
+    differences_list = []
+    for d in result_data.get("differences", []):
+        if isinstance(d, dict):
+            differences_list.append(
+                DifferenceItem(
+                    aspect=d.get("aspect", "General"),
+                    doc_a=d.get("doc_a", ""),
+                    doc_b=d.get("doc_b", ""),
+                )
             )
-            for i, c in enumerate(result_data.get("claims", []), start=1)
-        ],
+        elif isinstance(d, str):
+            differences_list.append(
+                DifferenceItem(aspect="Comparison", doc_a=d, doc_b="")
+            )
+
+    claims_list = []
+    for i, c in enumerate(result_data.get("claims", []), start=1):
+        if isinstance(c, dict):
+            claims_list.append(
+                ClaimItem(
+                    id=c.get("id", f"C{i:03d}"),
+                    claim=c.get("claim", ""),
+                    source_a=c.get("source_a"),
+                    source_b=c.get("source_b"),
+                    verdict=c.get("verdict", "agree"),
+                )
+            )
+        elif isinstance(c, str):
+            claims_list.append(
+                ClaimItem(
+                    id=f"C{i:03d}",
+                    claim=c,
+                    source_a=None,
+                    source_b=None,
+                    verdict="agree",
+                )
+            )
+
+    return CompareResponse(
+        summary=summary_str,
+        similarities=similarities_list,
+        differences=differences_list,
+        claims=claims_list,
         doc_a_name=doc_a.filename,
         doc_b_name=doc_b.filename,
     )

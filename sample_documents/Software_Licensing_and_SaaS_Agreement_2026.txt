@@ -1,0 +1,26 @@
+ENTERPRISE SOFTWARE-AS-A-SERVICE (SaaS)
+SUBSCRIPTION AGREEMENT
+Commercial Subscription & End-User Licensing Terms
+This SaaS Subscription Agreement (“Agreement”) is entered into as of November 1, 2026, by and between
+QuantumLogic Systems Inc., a Washington corporation (“Licensor”), and Apex Global Financial LLC, a Delaware
+company (“Licensee”).
+1. SUBSCRIPTION GRANT & USER SEAT TIERS
+1.1 Licensor grants Licensee a worldwide, non-exclusive, non-transferable subscription license to access the
+QuantumLogic Cloud Analytics Platform for up to 500 named seats.
+1.2 API Rate Limits: Standard enterprise quota allows up to 10,000,000 API calls per month with burst rates capped
+at 500 requests per second.
+2. SUBSCRIPTION FEES & BILLING
+2.1 Annual Subscription Fee: Licensee shall pay an annual recurring platform subscription fee of $320,000.00 USD,
+billed in advance on a quarterly installment basis.
+2.2 Over-quota usage is billed in arrears at $0.02 per 1,000 additional API calls.
+3. INTELLECTUAL PROPERTY & DATA RIGHTS
+3.1 Licensor retains all title, ownership, patent rights, copyrights, and intellectual property rights in the underlying
+machine learning algorithms and software code.
+3.2 Licensee retains absolute and exclusive ownership of all financial datasets and customer records processed
+through the platform.
+4. SERVICE AVAILABILITY & EXCLUSIONS
+4.1 Target availability is 99.5% uptime, excluding third-party cloud outages, internet routing failures, or customer-side
+network disruptions.
+5. GOVERNING LAW
+5.1 This Agreement is governed by the laws of the State of Washington, with exclusive venue in the King County
+Superior Court in Seattle, WA.

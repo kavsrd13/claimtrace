@@ -69,8 +69,10 @@ test-results/
 # Azure
 .azure/
 
-# Docker
+# Docker & Archives
 *.tar
+*.gz
+*.zip
 *.docker
 
 # Binary / model / dataset blobs

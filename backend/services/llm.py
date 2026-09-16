@@ -92,8 +92,7 @@ Question: {question}"""
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_message},
         ],
-        temperature=0.1,
-        max_tokens=1024,
+        extra_body={"max_completion_tokens": 4096, "reasoning_effort": "low"},
     )
 
     answer_text = response.choices[0].message.content or ""
@@ -124,24 +123,34 @@ async def compare_documents(
     Use the LLM to produce a structured comparison of two documents.
     Returns a dict with keys: summary, similarities, differences, claims.
     """
-    system_prompt = """You are ClaimTrace, a document analysis assistant.
-Compare the two documents provided and return a JSON object with this exact schema:
+    system_prompt = """You are ClaimTrace, a legal document analysis assistant.
+Compare Document A and Document B. You must return a valid JSON object strictly matching this schema:
 {
-  "summary": "<2-3 sentence overall comparison>",
-  "similarities": ["<point 1>", "<point 2>", ...],
+  "summary": "Concise 2-3 sentence overview of differences",
+  "similarities": ["bullet 1", "bullet 2"],
   "differences": [
-    {"aspect": "<topic>", "doc_a": "<what doc A says>", "doc_b": "<what doc B says>"}
+    {
+      "aspect": "Clause or topic name, e.g. Uptime SLA",
+      "doc_a": "What Document A specifies",
+      "doc_b": "What Document B specifies"
+    }
   ],
   "claims": [
     {
-      "id": "<unique id like C001>",
-      "claim": "<a specific claim made in one or both docs>",
-      "source_a": "<supporting text from doc A or null>",
-      "source_b": "<supporting text from doc B or null>",
+      "id": "C001",
+      "claim": "Specific statement or obligation",
+      "source_a": "Excerpt from Doc A or null",
+      "source_b": "Excerpt from Doc B or null",
       "verdict": "agree | disagree | only_in_a | only_in_b"
     }
   ]
 }
+
+CRITICAL FORMATTING RULES:
+1. 'differences' MUST be an array of JSON objects with keys 'aspect', 'doc_a', and 'doc_b'. NEVER return strings in 'differences'.
+2. 'claims' MUST be an array of JSON objects with keys 'id', 'claim', 'source_a', 'source_b', and 'verdict'. NEVER return strings in 'claims'.
+3. 'verdict' must be one of: 'agree', 'disagree', 'only_in_a', 'only_in_b'.
+4. Identify all distinct differences between the documents (e.g. SLA targets, fees, payment terms, liability caps, notice periods, breach response windows, governing law).
 Return ONLY the JSON object, no markdown."""
 
     user_message = f"""Document A ({filename_a}):
@@ -159,9 +168,8 @@ Document B ({filename_b}):
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_message},
         ],
-        temperature=0.0,
-        max_tokens=2048,
         response_format={"type": "json_object"},
+        extra_body={"max_completion_tokens": 8192, "reasoning_effort": "low"},
     )
 
     raw = response.choices[0].message.content or "{}"
