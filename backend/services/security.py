@@ -2,7 +2,9 @@
 Security service: prompt injection detection, file validation, session TTL.
 """
 
+import io
 import re
+import zipfile
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -137,19 +139,60 @@ def validate_upload(filename: str, content_type: str, size_bytes: int, max_bytes
         )
 
 
+WINDOWS_RESERVED_NAMES: set[str] = {
+    "con", "prn", "aux", "nul",
+    *(f"com{i}" for i in range(1, 10)),
+    *(f"lpt{i}" for i in range(1, 10)),
+}
+
+
 def sanitize_filename(filename: str) -> str:
     """
-    Sanitize filename to prevent path traversal and shell injection.
+    Sanitize filename to prevent path traversal, shell injection, and Windows reserved names.
     """
     clean = Path(filename).name.strip()
     clean = re.sub(r'[\x00-\x1f\x7f\\/:\*\?"<>\|]', "_", clean)
+    base = Path(clean).stem.lower()
+    if base in WINDOWS_RESERVED_NAMES:
+        clean = f"safe_{clean}"
     return clean or "unnamed_document"
+
+
+def check_docx_zip_bomb(
+    content: bytes,
+    max_uncompressed_bytes: int = 50 * 1024 * 1024,
+    max_ratio: float = 100.0,
+) -> None:
+    """
+    Inspect DOCX zip package entries to prevent decompression bombs (zip bombs).
+    Checks total uncompressed size and compression ratio without extracting to disk.
+    """
+    try:
+        with zipfile.ZipFile(io.BytesIO(content)) as zf:
+            total_uncompressed = 0
+            compressed_size = len(content)
+            for info in zf.infolist():
+                total_uncompressed += info.file_size
+                if total_uncompressed > max_uncompressed_bytes:
+                    raise SecurityError(
+                        f"Decompressed file size exceeds safety threshold ({max_uncompressed_bytes // (1024*1024)} MB).",
+                        code="ZIP_BOMB_DETECTED",
+                    )
+            if compressed_size > 0:
+                ratio = total_uncompressed / compressed_size
+                if ratio > max_ratio and total_uncompressed > 1024 * 1024:
+                    raise SecurityError(
+                        f"Suspicious compression ratio ({ratio:.1f}:1 exceeds {max_ratio:.0f}:1). Potential zip bomb.",
+                        code="ZIP_BOMB_DETECTED",
+                    )
+    except zipfile.BadZipFile as exc:
+        raise SecurityError("Corrupt or invalid DOCX archive.", code="INVALID_FILE_HEADER") from exc
 
 
 def validate_file_bytes(content: bytes, filename: str) -> None:
     """
     Inspect magic bytes to ensure file contents genuinely match declared file extension.
-    Guards against extension spoofing (e.g. disguised executables or archives).
+    Guards against extension spoofing (e.g. disguised executables or archives) and zip bombs.
     """
     ext = Path(filename).suffix.lower()
 
@@ -167,6 +210,8 @@ def validate_file_bytes(content: bytes, filename: str) -> None:
                 "Invalid file structure: DOCX documents must be valid ZIP packages starting with 'PK' magic bytes.",
                 code="INVALID_FILE_HEADER",
             )
+        # Defense against decompression bomb
+        check_docx_zip_bomb(content)
 
     elif ext == ".txt":
         # Block disguised binaries with executable or ELF headers

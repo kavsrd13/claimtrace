@@ -6,23 +6,7 @@ import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
 import LoadingState from '../components/LoadingState'
 
-/* ============================================================
-   Verdict Badge
-   ============================================================ */
-const VERDICT_LABELS: Record<ClaimItem['verdict'], string> = {
-  agree: '✅ Agree',
-  disagree: '❌ Disagree',
-  only_in_a: '📘 Only in A',
-  only_in_b: '📙 Only in B',
-}
-
-function VerdictBadge({ verdict }: { verdict: ClaimItem['verdict'] }) {
-  return (
-    <span className={`verdict-badge verdict-${verdict}`} aria-label={`Verdict: ${verdict}`}>
-      {VERDICT_LABELS[verdict]}
-    </span>
-  )
-}
+import VerdictBadge from '../components/VerdictBadge'
 
 /* ============================================================
    Compare Page

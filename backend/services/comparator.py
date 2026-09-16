@@ -63,6 +63,7 @@ def retrieve_top_k(
     denom = m_norms * q_norm
     denom[denom == 0] = 1.0
     scores = np.dot(matrix, query) / denom
+    scores = np.nan_to_num(scores, nan=0.0)
 
     top_indices = np.argsort(scores)[::-1][:k]
 

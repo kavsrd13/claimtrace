@@ -24,7 +24,12 @@ def test_spoofed_pdf_raises():
 
 
 def test_valid_docx_magic_bytes():
-    docx_content = b"PK\x03\x04\x14\x00\x06\x00\x08\x00" + b"\x00" * 50
+    import io
+    import zipfile
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        zf.writestr("[Content_Types].xml", b"<Types/>")
+    docx_content = buf.getvalue()
     validate_file_bytes(docx_content, "agreement.docx")  # Should not raise
 
 
