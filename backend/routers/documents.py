@@ -18,7 +18,13 @@ from models import Document
 from models import Session as SessionModel
 from services.comparator import build_embeddings, serialize_embeddings
 from services.extractor import ExtractionError, extract_text
-from services.security import SecurityError, check_session_active, validate_upload
+from services.security import (
+    SecurityError,
+    check_session_active,
+    sanitize_filename,
+    validate_file_bytes,
+    validate_upload,
+)
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/sessions", tags=["documents"])
@@ -72,12 +78,13 @@ async def upload_document(
     await _get_active_session(session_id, db)
 
     content = await file.read()
-    filename = file.filename or "upload"
+    filename = sanitize_filename(file.filename or "upload")
     content_type = file.content_type or "application/octet-stream"
 
     # Security validation
     try:
         validate_upload(filename, content_type, len(content), settings.max_upload_size_bytes)
+        validate_file_bytes(content, filename)
     except SecurityError as e:
         raise HTTPException(status_code=422, detail={"code": e.code, "message": str(e)}) from e
 

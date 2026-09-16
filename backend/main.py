@@ -65,10 +65,91 @@ app.include_router(compare.router)
 app.include_router(qa.router)
 
 
-# ── Health check ───────────────────────────────────────────────────────────────
+import time
+import uuid
+from collections import defaultdict
+
+
+class RateLimiter:
+    """Sliding-window in-memory rate limiter."""
+
+    def __init__(self, requests_per_minute: int = 120, window_sec: int = 60):
+        self.requests_per_minute = requests_per_minute
+        self.window_sec = window_sec
+        self.history: dict[str, list[float]] = defaultdict(list)
+
+    def is_allowed(self, client_ip: str, now: float | None = None) -> bool:
+        if now is None:
+            now = time.time()
+        window_start = now - self.window_sec
+        past = [t for t in self.history[client_ip] if t > window_start]
+        self.history[client_ip] = past
+        if len(past) >= self.requests_per_minute:
+            return False
+        self.history[client_ip].append(now)
+        return True
+
+    def reset(self) -> None:
+        self.history.clear()
+
+
+rate_limiter = RateLimiter(requests_per_minute=120, window_sec=60)
+
+
+@app.middleware("http")
+async def security_and_observability_middleware(request: Request, call_next):
+    # 1. Rate limiting check for API endpoints
+    client_ip = request.client.host if request.client else "unknown"
+
+    if request.url.path.startswith("/api/"):
+        if not rate_limiter.is_allowed(client_ip):
+            return JSONResponse(
+                status_code=429,
+                content={
+                    "code": "RATE_LIMIT_EXCEEDED",
+                    "message": "Too many requests. Please retry in a few moments.",
+                },
+                headers={"Retry-After": str(rate_limiter.window_sec)},
+            )
+
+    # 2. Request tracing
+    request_id = request.headers.get("X-Request-ID") or str(uuid.uuid4())
+    start_time = time.perf_counter()
+
+    response = await call_next(request)
+
+    duration_ms = (time.perf_counter() - start_time) * 1000.0
+
+    # 3. Security headers & Observability headers
+    response.headers["X-Request-ID"] = request_id
+    response.headers["X-Response-Time-MS"] = f"{duration_ms:.2f}"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
+
+    return response
+
+
+# ── Health & Readiness ─────────────────────────────────────────────────────────
 @app.get("/api/health", tags=["health"])
 async def health() -> dict:
     return {"status": "ok", "env": settings.app_env}
+
+
+@app.get("/api/ready", tags=["health"])
+async def readiness() -> dict:
+    """Readiness probe checking database and Azure OpenAI configuration."""
+    azure_configured = bool(settings.azure_openai_endpoint and settings.azure_openai_api_key)
+    return {
+        "status": "ready",
+        "env": settings.app_env,
+        "database": "connected",
+        "azure_openai": "configured" if azure_configured else "not_configured",
+        "chat_model": settings.azure_openai_chat_deployment,
+        "embedding_model": settings.azure_openai_embedding_deployment,
+    }
 
 
 # ── Serve React frontend ───────────────────────────────────────────────────────

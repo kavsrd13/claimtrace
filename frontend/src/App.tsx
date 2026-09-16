@@ -180,28 +180,36 @@ export default function App() {
   return (
     <BrowserRouter>
       <SessionProvider>
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
+        <div role="status" aria-live="polite" className="sr-only" id="a11y-announcer">
+          ClaimTrace active
+        </div>
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Upload />} />
-          <Route
-            path="/session/:sessionId/compare"
-            element={
-              <SessionRoute>
-                <Compare />
-              </SessionRoute>
-            }
-          />
-          <Route
-            path="/session/:sessionId/qa"
-            element={
-              <SessionRoute>
-                <QA />
-              </SessionRoute>
-            }
-          />
-          {/* Fallback */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <main id="main-content" tabIndex={-1}>
+          <Routes>
+            <Route path="/" element={<Upload />} />
+            <Route
+              path="/session/:sessionId/compare"
+              element={
+                <SessionRoute>
+                  <Compare />
+                </SessionRoute>
+              }
+            />
+            <Route
+              path="/session/:sessionId/qa"
+              element={
+                <SessionRoute>
+                  <QA />
+                </SessionRoute>
+              }
+            />
+            {/* Fallback */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
       </SessionProvider>
     </BrowserRouter>
   )

@@ -6,8 +6,10 @@ Orchestrates extraction, embedding, and LLM comparison.
 import json
 import logging
 
+import numpy as np
+
 from services.extractor import Chunk, chunks_to_full_text
-from services.llm import compare_documents, cosine_similarity, embed_texts
+from services.llm import compare_documents, embed_texts
 
 logger = logging.getLogger(__name__)
 
@@ -45,24 +47,33 @@ def retrieve_top_k(
     k: int = TOP_K,
 ) -> list[dict]:
     """
-    Retrieve the top-k most relevant chunks for a query.
+    Retrieve the top-k most relevant chunks for a query using vectorized NumPy operations.
     Returns a list of {label, text, score} dicts.
     """
-    scored = [
-        (
-            cosine_similarity(query_embedding, emb),
-            chunk,
-        )
-        for emb, chunk in zip(doc_embeddings, doc_chunks, strict=False)
-    ]
-    scored.sort(key=lambda x: x[0], reverse=True)
+    if not doc_embeddings or not doc_chunks:
+        return []
+
+    matrix = np.array(doc_embeddings, dtype=np.float32)
+    query = np.array(query_embedding, dtype=np.float32)
+    q_norm = float(np.linalg.norm(query))
+    if q_norm == 0:
+        return []
+
+    m_norms = np.linalg.norm(matrix, axis=1)
+    denom = m_norms * q_norm
+    denom[denom == 0] = 1.0
+    scores = np.dot(matrix, query) / denom
+
+    top_indices = np.argsort(scores)[::-1][:k]
+
     return [
         {
-            "label": f"{doc_label_prefix} · {chunk.source_label}",
-            "text": chunk.text,
-            "score": score,
+            "label": f"{doc_label_prefix} · {doc_chunks[idx].source_label}",
+            "text": doc_chunks[idx].text,
+            "score": float(scores[idx]),
         }
-        for score, chunk in scored[:k]
+        for idx in top_indices
+        if idx < len(doc_chunks)
     ]
 
 

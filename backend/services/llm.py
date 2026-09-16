@@ -3,6 +3,7 @@ Azure OpenAI LLM service wrapper.
 Provides chat completions and text embeddings.
 """
 
+import hashlib
 import json
 import logging
 from dataclasses import dataclass
@@ -38,17 +39,47 @@ def _get_client() -> AsyncAzureOpenAI:
     )
 
 
+_EMBEDDING_CACHE: dict[str, list[float]] = {}
+_MAX_CACHE_ENTRIES = 4096
+
+
+def _text_hash(text: str) -> str:
+    return hashlib.sha256(text.strip().encode("utf-8")).hexdigest()
+
+
 async def embed_texts(texts: list[str]) -> list[list[float]]:
     """
     Embed a list of text strings using Azure OpenAI embeddings.
-    Returns a list of float vectors.
+    Uses an in-memory SHA256 cache to prevent redundant API calls for identical chunks.
     """
+    if not texts:
+        return []
+
     client = _get_client()
-    response = await client.embeddings.create(
-        model=settings.azure_openai_embedding_deployment,
-        input=texts,
-    )
-    return [item.embedding for item in response.data]
+    results: list[list[float] | None] = [None] * len(texts)
+    missing_indices: list[int] = []
+    missing_texts: list[str] = []
+
+    for i, t in enumerate(texts):
+        h = _text_hash(t)
+        if h in _EMBEDDING_CACHE:
+            results[i] = _EMBEDDING_CACHE[h]
+        else:
+            missing_indices.append(i)
+            missing_texts.append(t)
+
+    if missing_texts:
+        response = await client.embeddings.create(
+            model=settings.azure_openai_embedding_deployment,
+            input=missing_texts,
+        )
+        for idx, item in zip(missing_indices, response.data, strict=False):
+            emb = item.embedding
+            results[idx] = emb
+            if len(_EMBEDDING_CACHE) < _MAX_CACHE_ENTRIES:
+                _EMBEDDING_CACHE[_text_hash(texts[idx])] = emb
+
+    return [r for r in results if r is not None]
 
 
 async def answer_question(
